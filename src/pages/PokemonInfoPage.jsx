@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom'
-import { getIdPokemon } from '../lib/utils/helper';
+import { Link, useParams } from 'react-router-dom'
+import { getIdPokemon } from '@/lib/utils/helper';
 import { CiLineHeight } from "react-icons/ci";
 import { LiaWeightSolid } from "react-icons/lia";
 import { ImStatsDots } from "react-icons/im";
-import Loader from '../components/Loader';
+import Loader from '@/components/Loader';
 import { SiMicrogenetics } from "react-icons/si";
 
-export default function PokemonPersonalPage() {
+export default function PokemonInfoPage() {
 
     const params = useParams();
     const pokemonId = params.pokemonId;
@@ -61,13 +61,9 @@ export default function PokemonPersonalPage() {
         setIsLoading(false);
     }
 
-    const getDataPokemon = () => {
-        fetchInfoPokemon(params);
-    }
-
     useEffect(() => {
-        getDataPokemon();
-    }, [])
+        fetchInfoPokemon(params);
+    }, [params])
 
     if (error) {
         return (
@@ -80,9 +76,9 @@ export default function PokemonPersonalPage() {
     if (isLoading) {
         return (
             <>
-            <div className='w-full h-screen flex justify-center items-center'>
-                <Loader />
-            </div>
+                <div className='w-full h-screen flex justify-center items-center'>
+                    <Loader />
+                </div>
             </ >
         )
     }
@@ -95,7 +91,7 @@ export default function PokemonPersonalPage() {
                     <div className='overflow-hidden'>
                         <div className='w-full h-[180px] bg-gradient-to-r from-yellow-400 to-yellow-300 relative '>
                             <div className='w-full absolute flex justify-center lg:translate-x-32 translate-x-28 translate-y-6 lg:translate-y-10 '>
-                                <img className='w-[150px] h-[150px] object-contain rotate-45' src='/public/pokeball.png' />
+                                <img className='w-[150px] h-[150px] object-contain rotate-45' src='/pokeball.png' />
                             </div>
                             <div className='flex justify-center'>
                                 <picture>
@@ -176,14 +172,14 @@ export default function PokemonPersonalPage() {
                                         <div className='flex flex-col lg:flex-row '>
                                             <div className='py-2'>
                                                 <div className='flex justify-center pb-5'>
-                                                    <img className='w-[500px]' src="/public/Evolve.png" alt="" />
+                                                    <img className='w-[500px]' src="/Evolve.png" alt="" />
                                                 </div>
                                                 {/* <p className='font-bold text-center text-xl pb-3'>Evolution</p> */}
                                                 {pokemonEvolutions && (
                                                     <ul className='lg:flex lg:justify-center lg:items-center'>
                                                         {pokemonEvolutions.map((evolution, index) => (
                                                             <React.Fragment key={index}>
-                                                                <a href={`/pokemon/${evolution.name}`}>
+                                                                <Link to={`/pokemon/${evolution.name}`}>
                                                                     <li className='flex flex-col justify-center items-center' key={index}>
                                                                         <p className='uppercase'>
                                                                             {evolution.name}
@@ -194,7 +190,7 @@ export default function PokemonPersonalPage() {
                                                                             alt=""
                                                                         />
                                                                     </li>
-                                                                </a>
+                                                                </Link>
                                                             </React.Fragment>
                                                         ))}
                                                     </ul>

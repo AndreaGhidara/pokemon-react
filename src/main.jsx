@@ -5,8 +5,10 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 
 import { Provider } from 'react-redux'
 import { store } from '@/stores/store.js';
-import PokemonPersonalPage from '@/pages/PokemonPersonalPage.jsx';
+import PokemonInfoPage from '@/pages/PokemonInfoPage.jsx';
 import PokemonHomePage from '@/pages/PokemonHomePage.jsx';
+import { Suspense } from 'react';
+import Loader from '@/components/Loader';
 
 const router = createBrowserRouter([
   {
@@ -15,11 +17,19 @@ const router = createBrowserRouter([
   },
   {
     path: '/pokemon',
-    element: <PokemonHomePage />
+    element: (
+      <Suspense fallback={<Loader />}>
+        <PokemonHomePage />
+      </Suspense>
+    )
   },
   {
     path: '/pokemon/:pokemonId',
-    element: <PokemonPersonalPage />
+    element: (
+      <Suspense fallback={<Loader />}>
+        <PokemonInfoPage />
+      </Suspense>
+    )
   }
 ]);
 

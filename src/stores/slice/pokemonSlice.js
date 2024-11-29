@@ -5,8 +5,6 @@ const initialState = {
     currentPage: 1,
     nextPageUrl: '',
     prevPageUrl: '',
-    isLoading: false,
-    error: null,
 };
 
 const pokemonSlice = createSlice({
@@ -18,12 +16,6 @@ const pokemonSlice = createSlice({
             state.pokemonList = pokemonList;
             state.nextPageUrl = nextPageUrl;
             state.prevPageUrl = prevPageUrl;
-        },
-        setLoading: (state, action) => {
-            state.isLoading = action.payload;
-        },
-        setError: (state, action) => {
-            state.error = action.payload;
         },
         setPage: (state, action) => {
             state.currentPage = action.payload;
