@@ -1,17 +1,18 @@
 /* eslint-disable react/prop-types */
 import React from "react";
 import { Link } from "react-router-dom";
+import { getIdPokemon } from "@/lib/utils/helper";
 
 
 
 export default React.memo(function PokemonList({ pokemon }) {
 
-    // util id pokemon
-    const getIdPokemon = (path) => {
-        if (!path) return null;
-        const idPokemon = path.split("/").filter(Boolean).pop();
-        return idPokemon
-    }
+    // // util id pokemon
+    // const getIdPokemon = (path) => {
+    //     if (!path) return null;
+    //     const idPokemon = path.split("/").filter(Boolean).pop();
+    //     return idPokemon
+    // }
 
     return (
         <ul className="w-full flex flex-col justify-center">

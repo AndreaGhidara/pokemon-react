@@ -3,7 +3,8 @@ import './index.css';
 import App from './App.jsx';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import PokemonPersonalPage from '@/pages/PokemonPersonalPage.jsx';
-// import PokemonHomePage from '@/pages/PokemonHomePage.jsx'
+import { store } from './stores/store.js';
+import { Provider } from 'react-redux'
 
 const router = createBrowserRouter([
   {
@@ -18,5 +19,7 @@ const router = createBrowserRouter([
 
 
 createRoot(document.getElementById('root')).render(
-  <RouterProvider router={router} />
+  <Provider store={store}>
+    <RouterProvider router={router} />
+  </Provider>
 )

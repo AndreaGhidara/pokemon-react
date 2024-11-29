@@ -1,30 +1,37 @@
-import { createSlice } from '@reduxjs/toolkit'
+// store/pokemonSlice.js
+import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
-    value: 0,
-}
+    pokemonList: [],
+    currentPage: 1,
+    nextPageUrl: '',
+    prevPageUrl: '',
+    isLoading: false,
+    error: null,
+};
 
-export const counterSlice = createSlice({
-    name: 'counter',
+const pokemonSlice = createSlice({
+    name: 'pokemon',
     initialState,
     reducers: {
-        increment: (state) => {
-            // Redux Toolkit allows us to write "mutating" logic in reducers. It
-            // doesn't actually mutate the state because it uses the Immer library,
-            // which detects changes to a "draft state" and produces a brand new
-            // immutable state based off those changes
-            state.value += 1
+        setPokemonData: (state, action) => {
+            const { pokemonList, nextPageUrl, prevPageUrl } = action.payload;
+            state.pokemonList = pokemonList;
+            state.nextPageUrl = nextPageUrl;
+            state.prevPageUrl = prevPageUrl;
         },
-        decrement: (state) => {
-            state.value -= 1
+        setLoading: (state, action) => {
+            state.isLoading = action.payload;
         },
-        incrementByAmount: (state, action) => {
-            state.value += action.payload
+        setError: (state, action) => {
+            state.error = action.payload;
+        },
+        setPage: (state, action) => {
+            state.currentPage = action.payload;
         },
     },
-})
+});
 
-// Action creators are generated for each case reducer function
-export const { increment, decrement, incrementByAmount } = counterSlice.actions
+export const { setPokemonData, setLoading, setError, setPage } = pokemonSlice.actions;
 
-export default counterSlice.reducer
+export default pokemonSlice.reducer;
