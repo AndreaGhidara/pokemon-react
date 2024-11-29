@@ -40,9 +40,9 @@ export default function PokemonHomePage() {
         }
     };
 
-    // Aggiungi il controllo per verificare se i dati sono già caricati
+    
     useEffect(() => {
-        if (pokemonList.length === 0) {  // Controlla se la lista è vuota
+        if (pokemonList.length === 0) { 
             fetchPokemon(endPointPokemon);
         }
     // eslint-disable-next-line react-hooks/exhaustive-deps
