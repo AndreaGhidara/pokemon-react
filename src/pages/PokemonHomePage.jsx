@@ -1,18 +1,6 @@
-import React, { useEffect, useState } from "react"
-
-
-// count
-// : 
-// 1302
-// next
-// : 
-// "https://pokeapi.co/api/v2/pokemon/?offset=20&limit=20"
-// previous
-// : 
-// null
-// results
-// : 
-// (20) [{…}, {…}, {…}, {…}, {…}, {…}, {…}, {…},
+import { useEffect, useState } from "react"
+import Button from "../components/Button";
+import PokemonList from "../components/PokemonList";
 
 const endPointPokemon = 'https://pokeapi.co/api/v2/pokemon/';
 
@@ -42,21 +30,11 @@ export default function PokemonHomePage() {
             console.log(data);
 
         } catch (e) {
-            setError("errore");
-            console.log(e);
+            setError(`Problemi con il server: ${e.message}`);
         }
 
         setIsLoading(false);
     };
-
-    // util path img
-    const getPathForImage = (path) => {
-
-        const idPokemon = path.split("/").filter(Boolean).pop();
-        const pathFront = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${idPokemon}.png`;
-        // const pathBack = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/132.png";
-        return pathFront
-    }
 
     // Next page
     const nextPage = () => {
@@ -76,17 +54,16 @@ export default function PokemonHomePage() {
     }
 
     useEffect(() => {
+        fetchPokemon(endPointPokemon);
 
     }, [])
 
     if (error) {
         return (
-            <>
-                <div>
-                    <p>errore</p>
-                </div>
-            </>
-        )
+            <div>
+                <p>Errore: {error}</p>
+            </div>
+        );
     }
 
     if (isLoading) {
@@ -100,16 +77,11 @@ export default function PokemonHomePage() {
     return (
         <div className="px-2">
             <h1 className="text-center">Home Pokemon</h1>
-            <div className="flex justify-center py-2">
-                <button onClick={() => fetchPokemon(endPointPokemon)}>
-                    pokemon
-                </button>
-            </div>
             <div>
                 {pokemon && pokemon.length > 0 && (
                     <>
                         {/* I pokemon hanno name: string | url : string */}
-                        <ul className="w-full flex flex-col justify-center">
+                        {/* <ul className="w-full flex flex-col justify-center">
                             {pokemon.map((poke, index) => (
                                 <React.Fragment key={`${index}-${poke.name}`}>
                                     <li className="flex flex-col justify-center">
@@ -117,7 +89,11 @@ export default function PokemonHomePage() {
                                             {poke.url ?
                                                 (
                                                     <>
-                                                        <img className="w-[150px] h-[150px]" src={getPathForImage(poke.url)} alt="" />
+                                                        <img
+                                                            className="w-[150px] h-[150px]"
+                                                            src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${getIdPokemon(poke.url)}.png`}
+                                                            alt=""
+                                                        />
                                                     </>
                                                 )
                                                 :
@@ -130,29 +106,24 @@ export default function PokemonHomePage() {
 
                                         </picture>
                                         <p className="text-center">{poke.name}</p>
-                                        <button>
-                                            see Pokemon
-                                        </button>
+                                        <Link className="w-full flex justify-center py-1" to={`/pokemon/${getIdPokemon(poke.url)}`}>
+                                            <button>
+                                                see Pokemon
+                                            </button>
+                                        </Link>
                                     </li>
                                 </React.Fragment>
                             ))}
-                        </ul>
+                        </ul> */}
+                        <PokemonList pokemon={pokemon} />
                         <div className="flex justify-between items-center py-3">
-                            <div>
-                                {prevPageUrl && (
-                                    <>
-                                        <button onClick={prevPage}>prev</button>
-                                    </>
-                                )}
-                            </div>
+                            <Button onClick={prevPage} disabled={!prevPageUrl}>
+                                Prev
+                            </Button>
                             <p>currentPage : {currentPage}</p>
-                            <div>
-                                {nextPage && (
-                                    <>
-                                        <button onClick={nextPage}>next</button>
-                                    </>
-                                )}
-                            </div>
+                            <Button onClick={nextPage} disabled={!nextPageUrl}>
+                                Next
+                            </Button>
                         </div>
                     </>
                 )}
