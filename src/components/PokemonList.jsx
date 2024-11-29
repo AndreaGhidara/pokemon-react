@@ -7,48 +7,42 @@ import { getIdPokemon } from "@/lib/utils/helper";
 
 export default React.memo(function PokemonList({ pokemon }) {
 
-    // // util id pokemon
-    // const getIdPokemon = (path) => {
-    //     if (!path) return null;
-    //     const idPokemon = path.split("/").filter(Boolean).pop();
-    //     return idPokemon
-    // }
-
     return (
-        <ul className="w-full flex flex-col justify-center">
+        <ul className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-48 ">
             {/* I pokemon hanno name: string | url : string */}
             {pokemon.map((poke, index) => (
                 <React.Fragment key={`${index}-${poke.name}`}>
-                    <li className="flex flex-col justify-center">
-                        <picture className="flex justify-center">
-                            {poke.url ?
-                                (
-                                    <>
-                                        <img
-                                            className="w-[150px] h-[150px]"
-                                            src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${getIdPokemon(poke.url)}.png`}
-                                            alt=""
-                                        />
-                                    </>
-                                )
-                                :
-                                (
-                                    <>
-                                        <div className="w-[150px] h-[150px] bg-blue-600" />
-                                    </>
-                                )
-                            }
+                    <Link className="w-full flex justify-center py-1" to={`/pokemon/${getIdPokemon(poke.url)}`}>
+                        <li className="w-[300px] h-[300px] flex flex-col justify-center border rounded-full bg-gray-100 bg-contain shadow-2xl">
+                            <picture className="flex justify-center ">
+                                {poke.url ?
+                                    (
+                                        <div>
+                                            <img
+                                                className="w-[180px] h-[180px] "
+                                                src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${getIdPokemon(poke.url)}.png`}
+                                                alt=""
+                                            />
+                                        </div>
+                                    )
+                                    :
+                                    (
+                                        <>
+                                            <div className="w-[150px] h-[150px] bg-blue-600" />
+                                        </>
+                                    )
+                                }
 
-                        </picture>
-                        <p className="text-center">{poke.name}</p>
-                        <Link className="w-full flex justify-center py-1" to={`/pokemon/${getIdPokemon(poke.url)}`}>
-                            <button>
-                                see Pokemon
+                            </picture>
+                            <button className="bg-red-700 uppercase shadow-2xl hover:bg-red-800 hover:border-red-800">
+                                <p className="text-center text-xl text-white">
+                                    {poke.name}
+                                </p>
                             </button>
-                        </Link>
-                    </li>
+                        </li>
+                    </Link>
                 </React.Fragment>
             ))}
-        </ul>
+        </ul >
     );
 });

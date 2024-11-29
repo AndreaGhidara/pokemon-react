@@ -1,10 +1,16 @@
-import PokemonHomePage from "@/pages/PokemonHomePage";
+import { Link } from "react-router-dom";
 
 function App() {
 
   return (
     <>
-      <PokemonHomePage />
+      <div className="w-full h-screen">
+        <picture className="w-full h-full">
+          <Link to="/pokemon">
+            <img src="public/walpaperPika.jpeg" className="w-full h-screen object-contain bg-yellow-400" alt="" />
+          </Link>
+        </picture>
+      </div>
     </>
   )
 };

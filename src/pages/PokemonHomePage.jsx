@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import Button from "../components/Button";
 import PokemonList from "../components/PokemonList";
 import { setPokemonData, setLoading, setError, setPage } from "@/stores/slice/pokemonSlice";
+import Loader from '../components/Loader';
 
 const endPointPokemon = 'https://pokeapi.co/api/v2/pokemon/';
 
@@ -40,41 +41,46 @@ export default function PokemonHomePage() {
         }
     };
 
-    
+
     useEffect(() => {
-        if (pokemonList.length === 0) { 
+        if (pokemonList.length === 0) {
             fetchPokemon(endPointPokemon);
         }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [pokemonList]); 
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [pokemonList]);
 
     if (error) {
         return <div><p>Errore: {error}</p></div>;
     }
 
     if (isLoading) {
-        return <div>Loading...</div>;
+        return <div className='w-full h-screen flex justify-center items-center'><Loader /></div>;
     }
 
     return (
-        <div className="px-2">
-            <h1 className="text-center">Home Pokemon</h1>
-            <div>
-                {pokemonList && pokemonList.length > 0 && (
-                    <>
-                        <PokemonList pokemon={pokemonList} />
-                        <div className="flex justify-between items-center py-3">
-                            <Button onClick={prevPage} disabled={!prevPageUrl}>
-                                Prev
-                            </Button>
-                            <p>currentPage: {currentPage}</p>
-                            <Button onClick={nextPage} disabled={!nextPageUrl}>
-                                Next
-                            </Button>
-                        </div>
-                    </>
-                )}
+        <div className="w-full h-screen">
+            <picture className="w-full h-full relative">
+                <img src="public/sfondoPokemon.jpeg" className="w-full h-screen object-contain object-left-top md:object-center bg-yellow-400" alt="" />
+            </picture>
+            <div className="w-full px-2 absolute top-[28%]  ">
+                <div className='w-full'>
+                    {pokemonList && pokemonList.length > 0 && (
+                        <>
+                            <PokemonList pokemon={pokemonList} />
+                            <div className="flex justify-between items-center py-3">
+                                <Button onClick={prevPage} disabled={!prevPageUrl}>
+                                    Prev
+                                </Button>
+                                <p>currentPage: {currentPage}</p>
+                                <Button onClick={nextPage} disabled={!nextPageUrl}>
+                                    Next
+                                </Button>
+                            </div>
+                        </>
+                    )}
+                </div>
             </div>
         </div>
+
     );
 }
