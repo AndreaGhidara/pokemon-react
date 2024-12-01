@@ -3,8 +3,19 @@
 @tailwind components;
 @tailwind utilities;
 
+@font-face {
+  font-family: 'Pokemon';
+  font-style: normal;
+  src: url("public/fonts/Pokemon Solid.woff2") format('woff2');
+}
+
+.parkinsans {
+  font-family: "Parkinsans", sans-serif;
+  font-optical-sizing: auto;
+}
+
 :root {
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-family: parkinsans, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
 
@@ -19,6 +30,7 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
 
 a {
   font-weight: 500;

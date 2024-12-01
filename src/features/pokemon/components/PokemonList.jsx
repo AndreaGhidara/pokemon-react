@@ -1,18 +1,18 @@
 /* eslint-disable react/prop-types */
 import React from "react";
 import { Link } from "react-router-dom";
-import { getIdPokemon } from "@/lib/utils/helper";
-
-
 
 export default React.memo(function PokemonList({ pokemon }) {
+
+    console.log(pokemon);
+    
 
     return (
         <ul className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-48 ">
             {/* I pokemon hanno name: string | url : string */}
             {pokemon.map((poke, index) => (
                 <React.Fragment key={`${index}-${poke.name}`}>
-                    <Link className="w-full flex justify-center py-1" to={`/pokemon/${getIdPokemon(poke.url)}`}>
+                    <Link className="w-full flex justify-center py-1" to={`/pokemon/${poke.name}`}>
                         <li className="w-[300px] h-[300px] flex flex-col justify-center border rounded-full bg-gray-100 bg-contain shadow-2xl">
                             <picture className="flex justify-center ">
                                 {poke.url ?
@@ -20,7 +20,7 @@ export default React.memo(function PokemonList({ pokemon }) {
                                         <div>
                                             <img
                                                 className="w-[180px] h-[180px] "
-                                                src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${getIdPokemon(poke.url)}.png`}
+                                                src={poke.sprite}
                                                 alt=""
                                             />
                                         </div>

@@ -1,91 +1,26 @@
-import React, { useEffect, useState } from 'react'
-import { Link, useParams } from 'react-router-dom'
-import { getIdPokemon } from '@/lib/utils/helper';
+import { Link, useParams } from "react-router-dom";
+import PokemonLoader from "../components/PokemonLoader";
+import { usePokemonInfo } from "../hooks/usePokemon";
+import { SiMicrogenetics } from "react-icons/si";
+import { ImStatsDots } from "react-icons/im";
 import { CiLineHeight } from "react-icons/ci";
 import { LiaWeightSolid } from "react-icons/lia";
-import { ImStatsDots } from "react-icons/im";
-import Loader from '@/components/Loader';
-import { SiMicrogenetics } from "react-icons/si";
+import React from "react";
 
 export default function PokemonInfoPage() {
-
     const params = useParams();
-    const pokemonId = params.pokemonId;
+    const pokemonName = params.pokemonName
 
-    const [pokemon, setPokemon] = useState(null);
-    const [pokemonEvolutions, setPokemonEvolutions] = useState([]);
-    const [isLoading, setIsLoading] = useState(false);
-    const [error, setError] = useState(null);
+    const { data: pokemon, isLoading, isError } = usePokemonInfo(pokemonName);
 
-    const extractEvolution = (evolution) => {
-        const result = [];
+    if (isLoading) return <PokemonLoader />;
+    if (isError) return <div><p>Errore: {isError.message}</p></div>;
 
-        if (evolution.species) {
-            const id = getIdPokemon(evolution.species.url);
-            result.push({
-                name: evolution.species.name,
-                url: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${id}.png`
-            });
-        }
-
-        if (evolution.evolves_to && evolution.evolves_to.length > 0) {
-            evolution.evolves_to.forEach((nextEvolution) => {
-                result.push(...extractEvolution(nextEvolution));
-            });
-        }
-
-        return result;
-    };
-
-    const fetchInfoPokemon = async () => {
-        setIsLoading(true);
-        try {
-            const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${pokemonId}`)
-            const data = await response.json();
-            setPokemon(data);
-            console.log(data);
-
-            const evolutionSpecies = await fetch(data.species.url);
-            const dataSpecies = await evolutionSpecies.json();
-
-            const evolutionChain = await fetch(dataSpecies.evolution_chain.url);
-            const dataEvolutionChain = await evolutionChain.json();
-
-            const evolution = extractEvolution(dataEvolutionChain.chain);
-            setPokemonEvolutions(evolution);
-            console.log(evolution);
-        } catch (e) {
-            console.log(e);
-            setError()
-        }
-        setIsLoading(false);
-    }
-
-    useEffect(() => {
-        fetchInfoPokemon(params);
-    }, [params])
-
-    if (error) {
-        return (
-            <div>
-                <p>Errore: {error}</p>
-            </div>
-        );
-    }
-
-    if (isLoading) {
-        return (
-            <>
-                <div className='w-full h-screen flex justify-center items-center'>
-                    <Loader />
-                </div>
-            </ >
-        )
-    }
+    console.log(pokemon);
 
 
     return (
-        <>
+        <div>
             {pokemon && (
                 <>
                     <div className='overflow-hidden'>
@@ -93,6 +28,7 @@ export default function PokemonInfoPage() {
                             <div className='w-full absolute flex justify-center lg:translate-x-32 translate-x-28 translate-y-6 lg:translate-y-10 '>
                                 <img className='w-[150px] h-[150px] object-contain rotate-45' src='/pokeball.png' />
                             </div>
+                            {/* Sprite */}
                             <div className='flex justify-center'>
                                 <picture>
                                     <img
@@ -115,7 +51,9 @@ export default function PokemonInfoPage() {
 
                         <section className='px-3'>
                             <div className='bg-[#242424] p-5 rounded-lg mb-5 flex flex-col '>
+                                {/* NUMERO POKEDEX */}
                                 <div className='font-bold text-center pb-2 text-2xl'>#{pokemon?.order}</div>
+                                {/* NUMERO NAME */}
                                 <div className='w-full flex justify-center'>
                                     <h1 className='font-bold uppercase text-center text-4xl border-2 p-2 shadow-white shadow-2xl'>{pokemon?.name} </h1>
                                     {/* <p>Numero di pokedex ordine : {pokemon?.order}</p>
@@ -141,7 +79,8 @@ export default function PokemonInfoPage() {
                                         <div className='flex items-center'>
                                             <ImStatsDots className='me-2 text-2xl' />
                                             <p className=' pe-1 font-bold uppercase text-2xl'>
-                                                Stats</p>
+                                                Stats
+                                            </p>
                                         </div>
                                         <ul className='pt-4'>
                                             {pokemon?.stats?.map((statistics, index) => {
@@ -150,7 +89,7 @@ export default function PokemonInfoPage() {
 
                                                 return (
                                                     <li className='font-semibold flex items-center mb-2' key={index}>
-                                                        <p className='w-1/4'>{statistics.stat.name}:</p>
+                                                        <p className='w-2/4 lg:w-1/4 text-sm md:text-base '>{statistics.stat.name}:</p>
                                                         <div className="w-3/4 h-2 bg-gray-200 rounded-full overflow-hidden">
                                                             <div
                                                                 className={`h-full rounded-full`}
@@ -175,9 +114,9 @@ export default function PokemonInfoPage() {
                                                     <img className='w-[500px]' src="/Evolve.png" alt="" />
                                                 </div>
                                                 {/* <p className='font-bold text-center text-xl pb-3'>Evolution</p> */}
-                                                {pokemonEvolutions && (
+                                                {pokemon.evolutions && (
                                                     <ul className='lg:flex lg:justify-center lg:items-center'>
-                                                        {pokemonEvolutions.map((evolution, index) => (
+                                                        {pokemon.evolutions.map((evolution, index) => (
                                                             <React.Fragment key={index}>
                                                                 <Link to={`/pokemon/${evolution.name}`}>
                                                                     <li className='flex flex-col justify-center items-center' key={index}>
@@ -186,7 +125,7 @@ export default function PokemonInfoPage() {
                                                                         </p>
                                                                         <img
                                                                             className="w-[150px] h-[150px] lg:w-[200px] lg:h-[200px]"
-                                                                            src={evolution.url}
+                                                                            src={evolution.sprites}
                                                                             alt=""
                                                                         />
                                                                     </li>
@@ -199,7 +138,7 @@ export default function PokemonInfoPage() {
                                         </div>
                                     </div>
                                 </div>
-
+                                {/* ALTURA E PESO */}
                                 <div className='py-2 flex justify-between'>
                                     <div className='flex items-center text-2xl'>
                                         <CiLineHeight />
@@ -215,8 +154,6 @@ export default function PokemonInfoPage() {
                     </div>
                 </>
             )}
-
-        </>
-
+        </div>
     )
 }
