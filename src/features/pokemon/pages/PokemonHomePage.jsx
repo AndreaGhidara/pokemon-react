@@ -1,11 +1,12 @@
 // import React from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { usePokemonList } from '../hooks/usePokemon';
 // import PokemonCard from '../components/PokemonCard';
 import PokemonLoader from '../components/PokemonLoader';
 import Button from '@/components/Button';
 import PokemonList from '../components/PokemonList';
 import { useEffect } from 'react';
+import { CiHeart } from "react-icons/ci";
 
 function PokemonHomePage() {
     const [searchParams, setSearchParams] = useSearchParams();
@@ -17,7 +18,7 @@ function PokemonHomePage() {
     const handlePageChange = (newPage) => {
         setSearchParams({ page: newPage }); // Aggiorna l'URL
     };
-    
+
     // Recupera i dati della lista Pokémon
     const { data, isLoading, isError } = usePokemonList(page);
 
@@ -26,12 +27,19 @@ function PokemonHomePage() {
     }, [page]);
 
 
-    // Stati di caricamento ed errore
     if (isLoading) return <PokemonLoader />;
     if (isError) return <div><p>Errore: {isError.message}</p></div>;
 
     return (
         <div className="w-full h-screen">
+            <div className="w-full pb-5 absolute top-0 left-0 z-50 p-2">
+                <Link className='w-full flex justify-start' to="/pokemon/favorite">
+                    <button className="mb-5 flex items-center bg-gray-900 bg-opacity-50 text-white">
+                        <p>Fevorite</p>
+                        <CiHeart />
+                    </button>
+                </Link>
+            </div>
             <picture className="w-full h-full relative">
                 <img src="/sfondoPokemon.jpeg" className="w-full h-screen object-contain object-left-top md:object-center bg-yellow-400" alt="" />
             </picture>
@@ -59,32 +67,6 @@ function PokemonHomePage() {
                 </div>
             </div>
         </div>
-        // <section className='flex flex-col justify-between min-h-screen px-3'>
-        //     <h1 className='text-3xl font-bold text-center'>Pokemon List</h1>
-        //     <div className='grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-10'>
-        //         {data.results.map((pokemon) => (
-        //             <React.Fragment key={pokemon.name}>
-        //                 <PokemonCard pokemon={pokemon} />
-        //             </React.Fragment>
-        //         ))}
-        //     </div>
-        //     <div className='flex justify-between py-3'>
-        //         {/* Bottone "Previous" */}
-        //         <Button
-        //             disabled={page === 0} // Disabilitato se siamo già alla prima pagina
-        //             onClick={() => handlePageChange(page - 1)}
-        //         >
-        //             Previous
-        //         </Button>
-        //         {/* Bottone "Next" */}
-        //         <Button
-        //             disabled={!data.next} // Disabilitato se non ci sono altre pagine
-        //             onClick={() => handlePageChange(page + 1)}
-        //         >
-        //             Next
-        //         </Button>
-        //     </div>
-        // </section>
     );
 }
 

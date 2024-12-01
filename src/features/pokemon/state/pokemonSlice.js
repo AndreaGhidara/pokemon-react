@@ -1,16 +1,27 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 const pokemonSlice = createSlice({
-    name: 'fevoritePokemon',
+    name: 'favoritePokemon',
     initialState: {
-        selectedPokemon: [],
+        selectedPokemon: [], 
     },
     reducers: {
-        selectPokemon(state, action) {
-            state.selectedPokemon = action.payload;
+        // Aggiunge un Pokémon ai preferiti, evitando duplicati
+        addFavoritePokemon(state, action) {
+            console.log(action.payload);
+            
+            const pokemon = action.payload;
+            if (!state.selectedPokemon.some((poke) => poke.name === pokemon.name)) {
+                state.selectedPokemon.push(pokemon);
+            }
+        },
+
+        removeFavoritePokemon(state, action) {
+            const pokemonName = action.payload;
+            state.selectedPokemon = state.selectedPokemon.filter((poke) => poke.name !== pokemonName);
         },
     },
 });
 
-export const { selectPokemon } = pokemonSlice.actions;
+export const { addFavoritePokemon, removeFavoritePokemon } = pokemonSlice.actions;
 export default pokemonSlice.reducer;

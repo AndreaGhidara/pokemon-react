@@ -1,28 +1,49 @@
-import { Link, useParams } from "react-router-dom";
+import React from "react";
+import { Link, useParams,useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from 'react-redux';
+
 import PokemonLoader from "../components/PokemonLoader";
 import { usePokemonInfo } from "../hooks/usePokemon";
+import { addFavoritePokemon, removeFavoritePokemon } from '../state/pokemonSlice';
+
+import { LiaWeightSolid } from "react-icons/lia";
+import { IoArrowBackCircleOutline } from "react-icons/io5";
 import { SiMicrogenetics } from "react-icons/si";
 import { ImStatsDots } from "react-icons/im";
 import { CiLineHeight } from "react-icons/ci";
-import { LiaWeightSolid } from "react-icons/lia";
-import React from "react";
+
 
 export default function PokemonInfoPage() {
     const params = useParams();
+    const dispatch = useDispatch();
     const pokemonName = params.pokemonName
+    const navigate = useNavigate(); // Hook per navigare tra le pagine
+    const favoritePokemons = useSelector((state) => state.favoritePokemon.selectedPokemon);
 
     const { data: pokemon, isLoading, isError } = usePokemonInfo(pokemonName);
 
     if (isLoading) return <PokemonLoader />;
     if (isError) return <div><p>Errore: {isError.message}</p></div>;
 
-    console.log(pokemon);
+    const isFavorite = favoritePokemons.some((p) => p.name === pokemon.name);
 
+    const handleFavorite = () => {
+        if (isFavorite) {
+            dispatch(removeFavoritePokemon(pokemon.name)); // Rimuove se è già nei preferiti
+        } else {
+            dispatch(addFavoritePokemon(pokemon)); // Aggiunge ai preferiti
+        }
+    };
 
     return (
         <div>
             {pokemon && (
                 <>
+                    <div className="bg-transparent bg-gradient-to-r from-yellow-400 to-yellow-300 p-2">
+                        <button className="bg-transparent p-0" onClick={() => navigate(-1)}>
+                            <IoArrowBackCircleOutline fontSize={40} />
+                        </button>
+                    </div>
                     <div className='overflow-hidden'>
                         <div className='w-full h-[180px] bg-gradient-to-r from-yellow-400 to-yellow-300 relative '>
                             <div className='w-full absolute flex justify-center lg:translate-x-32 translate-x-28 translate-y-6 lg:translate-y-10 '>
@@ -154,6 +175,11 @@ export default function PokemonInfoPage() {
                     </div>
                 </>
             )}
+            <div className="px-3 pb-5">
+                <button onClick={handleFavorite} className="w-full">
+                    {isFavorite ? 'Rimuovi dai Preferiti' : 'Aggiungi ai Preferiti'}
+                </button>
+            </div>
         </div>
     )
 }
