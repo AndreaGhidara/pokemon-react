@@ -14,6 +14,7 @@ import { IoArrowBackCircleOutline } from "react-icons/io5";
 import { SiMicrogenetics } from "react-icons/si";
 import { ImStatsDots } from "react-icons/im";
 import { CiLineHeight } from "react-icons/ci";
+import { BiHomeAlt2 } from "react-icons/bi";
 
 
 export default function PokemonInfoPage() {
@@ -21,12 +22,13 @@ export default function PokemonInfoPage() {
     const dispatch = useDispatch();
     const pokemonName = params.pokemonName
     const navigate = useNavigate(); // Hook per navigare tra le pagine
-    const favoritePokemons = useSelector((state) => state.favoritePokemon.selectedPokemon);
+
     const ref = useRef(null);
     const isInView = useInView(ref, { once: true });
-    const { data: pokemon, isLoading, isError } = usePokemonInfo(pokemonName);
+    const favoritePokemons = useSelector((state) => state.favoritePokemon.selectedPokemon || {});
 
-    const isFavorite = favoritePokemons.some((p) => p.name === pokemon.name);
+    const { data: pokemon, isLoading, isError } = usePokemonInfo(pokemonName);
+    const isFavorite = pokemon && favoritePokemons.some((poke) => poke?.name === pokemon.name);
 
     const handleFavorite = () => {
         if (isFavorite) {
@@ -42,16 +44,28 @@ export default function PokemonInfoPage() {
     }, [pokemonName]);
 
     if (isLoading) return <PokemonLoader />;
+
     if (isError) return <div><p>Errore: {isError.message}</p></div>;
 
+    if (!pokemon) {
+        return <div>Pokemon non trovato o errore durante il caricamento.</div>;
+    }
     return (
         <div>
             {pokemon && (
                 <>
-                    <div className="bg-transparent bg-gradient-to-r from-yellow-400 to-yellow-300 p-2">
+                    <div className="bg-transparent bg-gradient-to-r from-yellow-400 to-yellow-300 p-2 flex justify-between">
                         <button className="bg-transparent p-0" onClick={() => navigate(-1)}>
                             <IoArrowBackCircleOutline fontSize={40} />
                         </button>
+                        <Link to="/pokemon">
+                            <button className="bg-transparent text-white border-2 border-white rounded-full p-2" >
+                                <BiHomeAlt2 fontSize={20} />
+                            </button>
+                        </Link>
+                        <div className="hidden">
+
+                        </div>
                     </div>
                     <div className='overflow-hidden'>
                         <div className='w-full h-[180px] bg-gradient-to-r from-yellow-400 to-yellow-300 relative '>
@@ -99,7 +113,7 @@ export default function PokemonInfoPage() {
                                 <div className='font-bold text-center pb-2 text-2xl'>#{pokemon?.order}</div>
                                 {/* NUMERO NAME */}
                                 <div className='w-full flex justify-center'>
-                                    <h1 className='font-bold uppercase text-center text-4xl border-2 p-2 shadow-white shadow-2xl'>{pokemon?.name} </h1>
+                                    <h1 className='font-bold uppercase text-center text-4xl border-2 p-2 shadow-white shadow-2xl'>{pokemon?.name || 'N/A'} </h1>
                                     {/* <p>Numero di pokedex ordine : {pokemon?.order}</p>
                                     <p>Numero di pokedex id : {pokemon?.id}</p> */}
                                 </div>
@@ -110,9 +124,9 @@ export default function PokemonInfoPage() {
                                         <p className='pe-1 font-bold text-2xl uppercase'>{pokemon.types.length > 1 ? 'Types' : 'Type'} </p>
                                     </div>
                                     <ul className='flex pt-3'>
-                                        {pokemon.types.map((typeInfo, index) => (
+                                        {pokemon?.types?.map((typeInfo, index) => (
                                             <li className='font-medium uppercase px-2 lg:px-0' key={index}>
-                                                {typeInfo.type.name} <span className={`px-2 ${index === pokemon.types.length - 1 && 'hidden'}`}>/</span>
+                                                {typeInfo?.type?.name || 'N/A'} <span className={`px-2 ${index === pokemon.types.length - 1 && 'hidden'}`}>/</span>
                                             </li>
                                         ))}
                                     </ul>
@@ -129,11 +143,11 @@ export default function PokemonInfoPage() {
                                         <ul className='pt-4'>
                                             {pokemon?.stats?.map((statistics, index) => {
                                                 const maxStat = 100; // Valore massimo della statistica
-                                                const percentage = (statistics.base_stat / maxStat) * 100;
+                                                const percentage = (statistics?.base_stat / maxStat) * 100;
 
                                                 return (
                                                     <li className='font-semibold flex items-center mb-2' key={index}>
-                                                        <p className='w-2/4 lg:w-1/4 text-sm md:text-base '>{statistics.stat.name}:</p>
+                                                        <p className='w-2/4 lg:w-1/4 text-sm md:text-base '>{statistics?.stat.name}:</p>
                                                         <div className="w-3/4 h-2 bg-gray-200 rounded-full overflow-hidden">
                                                             <div
                                                                 className={`h-full rounded-full`}
@@ -143,11 +157,11 @@ export default function PokemonInfoPage() {
                                                                 }}
                                                             />
                                                         </div>
-                                                        <span className="ml-2">{statistics.base_stat}</span>
+                                                        <span className="ml-2">{statistics?.base_stat}</span>
                                                     </li>
                                                 );
                                             })}
-                                            Total: {pokemon.stats.reduce((total, stat) => total + stat.base_stat, 0)}
+                                            Total: {pokemon?.stats?.reduce((total, stat) => total + stat.base_stat, 0)}
                                         </ul>
                                     </div>
                                     {/* EVOLUZIONI */}
@@ -158,7 +172,7 @@ export default function PokemonInfoPage() {
                                                     <img className='w-[500px]' src="/Evolve.png" alt="" />
                                                 </div>
                                                 {/* <p className='font-bold text-center text-xl pb-3'>Evolution</p> */}
-                                                {pokemon.evolutions && (
+                                                {pokemon?.evolutions && (
                                                     <motion.ul
                                                         initial={{ opacity: 0, scale: 0, }}
                                                         animate={{ opacity: 1, scale: 1, }}
@@ -168,16 +182,16 @@ export default function PokemonInfoPage() {
                                                             transition: "all 0.9s cubic-bezier(0.17, 0.55, 0.55, 1) 0.5s"
                                                         }}
                                                         className='lg:flex lg:justify-center lg:items-center'>
-                                                        {pokemon.evolutions.map((evolution, index) => (
+                                                        {pokemon?.evolutions?.map((evolution, index) => (
                                                             <React.Fragment key={index}>
                                                                 <Link to={`/pokemon/${evolution.name}`}>
                                                                     <li className='flex flex-col justify-center items-center' key={index}>
                                                                         <p className='uppercase'>
-                                                                            {evolution.name}
+                                                                            {evolution?.name || 'N/A'}
                                                                         </p>
                                                                         <img
                                                                             className="w-[150px] h-[150px] lg:w-[200px] lg:h-[200px]"
-                                                                            src={evolution.sprites}
+                                                                            src={evolution?.sprites}
                                                                             alt=""
                                                                         />
                                                                     </li>
