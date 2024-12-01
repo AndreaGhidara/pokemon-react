@@ -1,10 +1,13 @@
-import React from "react";
-import { Link, useParams,useNavigate } from "react-router-dom";
+import React, { useEffect } from "react";
+import { Link, useParams, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from 'react-redux';
 
 import PokemonLoader from "../components/PokemonLoader";
 import { usePokemonInfo } from "../hooks/usePokemon";
 import { addFavoritePokemon, removeFavoritePokemon } from '../state/pokemonSlice';
+import { useRef } from "react";
+import { useInView } from "framer-motion";
+import { motion } from "framer-motion"
 
 import { LiaWeightSolid } from "react-icons/lia";
 import { IoArrowBackCircleOutline } from "react-icons/io5";
@@ -19,11 +22,9 @@ export default function PokemonInfoPage() {
     const pokemonName = params.pokemonName
     const navigate = useNavigate(); // Hook per navigare tra le pagine
     const favoritePokemons = useSelector((state) => state.favoritePokemon.selectedPokemon);
-
+    const ref = useRef(null);
+    const isInView = useInView(ref, { once: true });
     const { data: pokemon, isLoading, isError } = usePokemonInfo(pokemonName);
-
-    if (isLoading) return <PokemonLoader />;
-    if (isError) return <div><p>Errore: {isError.message}</p></div>;
 
     const isFavorite = favoritePokemons.some((p) => p.name === pokemon.name);
 
@@ -34,6 +35,14 @@ export default function PokemonInfoPage() {
             dispatch(addFavoritePokemon(pokemon)); // Aggiunge ai preferiti
         }
     };
+
+
+    useEffect(() => {
+        window.scrollTo(0, 0);
+    }, [pokemonName]);
+
+    if (isLoading) return <PokemonLoader />;
+    if (isError) return <div><p>Errore: {isError.message}</p></div>;
 
     return (
         <div>
@@ -46,25 +55,39 @@ export default function PokemonInfoPage() {
                     </div>
                     <div className='overflow-hidden'>
                         <div className='w-full h-[180px] bg-gradient-to-r from-yellow-400 to-yellow-300 relative '>
-                            <div className='w-full absolute flex justify-center lg:translate-x-32 translate-x-28 translate-y-6 lg:translate-y-10 '>
-                                <img className='w-[150px] h-[150px] object-contain rotate-45' src='/pokeball.png' />
+                            <div
+
+                                className='w-full absolute flex justify-center lg:translate-x-32 translate-x-28 translate-y-6 lg:translate-y-10 '>
+                                <motion.img
+                                    initial={{ opacity: 0, scale: 0, rotate: 0 }}
+                                    animate={{ opacity: 1, scale: 1, rotate: 45 }}
+                                    className='w-[150px] h-[150px] object-contain rotate-45' src='/pokeball.png' />
                             </div>
                             {/* Sprite */}
                             <div className='flex justify-center'>
-                                <picture>
+                                <motion.picture
+                                    initial={{ opacity: 1, scale: 0, }}
+                                    animate={{ opacity: 1, scale: 1, }}
+                                    transition={{ duration: 1, times: [0, 0.2, 0.5, 0.8, 1] }}
+
+                                >
                                     <img
                                         className="w-[130px] h-[130px] lg:w-[200px] lg:h-[200px]"
                                         src={pokemon?.sprites?.front_default}
                                         alt=""
                                     />
-                                </picture>
-                                <picture>
+                                </motion.picture>
+                                <motion.picture
+                                    initial={{ opacity: 0, scale: 0, }}
+                                    animate={{ opacity: 1, scale: 1, }}
+                                    transition={{ duration: 1, times: [0, 0.2, 0.5, 0.8, 1] }}
+                                >
                                     <img
                                         className="w-[100px] h-[100px] lg:w-[130px] lg:h-[130px]"
                                         src={pokemon?.sprites?.back_default}
                                         alt=""
                                     />
-                                </picture>
+                                </motion.picture>
                             </div>
                             <div>
                             </div>
@@ -136,7 +159,15 @@ export default function PokemonInfoPage() {
                                                 </div>
                                                 {/* <p className='font-bold text-center text-xl pb-3'>Evolution</p> */}
                                                 {pokemon.evolutions && (
-                                                    <ul className='lg:flex lg:justify-center lg:items-center'>
+                                                    <motion.ul
+                                                        initial={{ opacity: 0, scale: 0, }}
+                                                        animate={{ opacity: 1, scale: 1, }}
+                                                        style={{
+                                                            transform: isInView ? "none" : "translatex(-200px)",
+                                                            opacity: isInView ? 1 : 0,
+                                                            transition: "all 0.9s cubic-bezier(0.17, 0.55, 0.55, 1) 0.5s"
+                                                        }}
+                                                        className='lg:flex lg:justify-center lg:items-center'>
                                                         {pokemon.evolutions.map((evolution, index) => (
                                                             <React.Fragment key={index}>
                                                                 <Link to={`/pokemon/${evolution.name}`}>
@@ -153,7 +184,7 @@ export default function PokemonInfoPage() {
                                                                 </Link>
                                                             </React.Fragment>
                                                         ))}
-                                                    </ul>
+                                                    </motion.ul>
                                                 )}
                                             </div>
                                         </div>

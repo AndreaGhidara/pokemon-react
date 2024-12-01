@@ -8,6 +8,7 @@ import PokemonList from '../components/PokemonList';
 import { useEffect } from 'react';
 import { CiHeart } from "react-icons/ci";
 
+
 function PokemonHomePage() {
     const [searchParams, setSearchParams] = useSearchParams();
 
