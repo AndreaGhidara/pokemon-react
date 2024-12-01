@@ -6,7 +6,7 @@ import PokemonLoader from '../components/PokemonLoader';
 import Button from '@/components/Button';
 import PokemonList from '../components/PokemonList';
 import { useEffect } from 'react';
-import { CiHeart } from "react-icons/ci";
+import { MdCatchingPokemon } from "react-icons/md";
 
 
 function PokemonHomePage() {
@@ -36,8 +36,8 @@ function PokemonHomePage() {
             <div className="w-full pb-5 absolute top-0 left-0 z-50 p-2">
                 <Link className='w-full flex justify-start' to="/pokemon/favorite">
                     <button className="mb-5 flex items-center bg-gray-900 bg-opacity-50 text-white">
-                        <p>Fevorite</p>
-                        <CiHeart />
+                        Preferiti-
+                        <MdCatchingPokemon />
                     </button>
                 </Link>
             </div>
