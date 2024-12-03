@@ -10,17 +10,18 @@ const router = createBrowserRouter([
         element: <App />,
     },
     {
-        path: '/pokemon',
+        path: 'pokemon',
         element: <PokemonHomePage />,
     },
     {
-        path: '/pokemon/:pokemonName',
+        path: 'pokemon/:pokemonName',
         element: <PokemonInfoPage />,
     },
     {
-        path: '/pokemon/favorite',
+        path: 'pokemon/favorite',
         element: <PokemonFavoritePage />,
     },
+
 ]);
 
 export default router;
