@@ -5,7 +5,7 @@ import { usePokemonList } from '../hooks/usePokemon';
 import PokemonLoader from '../components/PokemonLoader';
 import Button from '@/components/Button';
 import PokemonList from '../components/PokemonList';
-import { useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { MdCatchingPokemon } from "react-icons/md";
 
 
@@ -22,6 +22,8 @@ function PokemonHomePage() {
 
     // Recupera i dati della lista Pokémon
     const { data, isLoading, isError } = usePokemonList(page);
+
+    const pokemonList = React.useMemo(() => data?.results || [], [data]);
 
     useEffect(() => {
         window.scrollTo(0, 0);
@@ -48,7 +50,7 @@ function PokemonHomePage() {
                 <div className='w-full'>
                     {data && data.results && data.results.length > 0 && (
                         <>
-                            <PokemonList pokemon={data.results} />
+                            <PokemonList pokemon={pokemonList} />
                             <div className="flex justify-between items-center py-3">
                                 <Button
                                     disabled={page === 0} // Disabilitato se siamo già alla prima pagina
